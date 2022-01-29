@@ -9,8 +9,6 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 
 public class Telegram extends TelegramLongPollingBot {
 
@@ -31,14 +29,16 @@ public class Telegram extends TelegramLongPollingBot {
 
     public String sendNewPhoto(String fileLocation, Update update) {
 
-
-
         try {
+            File screenShotFile = new File(fileLocation);
             sendPhoto.setChatId(update.getMessage().getChatId().toString());
             InputFile file = new InputFile();
-            file.setMedia(new File(fileLocation));
+            file.setMedia(screenShotFile);
             sendPhoto.setPhoto(file);
-            execute(sendPhoto); // Call method to send the message
+            execute(sendPhoto); // Call method to send the screenShot
+            if (screenShotFile.delete()) {
+                System.out.println("Фаил удален");
+            } else System.out.println("Фаил не найден");
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
