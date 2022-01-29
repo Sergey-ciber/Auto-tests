@@ -1,17 +1,37 @@
 package autoTests;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebElement;
+import org.apache.commons.io.FileUtils;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.remote.Augmenter;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.Duration;
+import java.util.function.Function;
 
 public class AutoTests {
-    public static String startTest() {
+    private static String resultMessage;
+
+    private static String saveScreenshot (ChromeDriver driver) {
+
+        String path;
+        try {
+            WebDriver webDriver = new Augmenter().augment(driver);
+            File source = ((TakesScreenshot)webDriver).getScreenshotAs(OutputType.FILE);
+            path = "./" + source.getName();
+            FileUtils.copyFile(source, new File(path));
+        }
+        catch(IOException e) {
+            path = "Failed to capture screenshot: " + e.getMessage();
+        }
+        return path;
+    }
+
+    public static String startTest(Function<String, String> saveScreenshot) {
 
         String url = "http://10.225.16.26:8080/wozm/";
         String login = "TEST5210";
@@ -72,7 +92,11 @@ public class AutoTests {
         WebElement submitFilter = driver.findElement(By.xpath("(//div[@class='GHGOUU-BGDC']//div[@class='GHGOUU-BMP']//div[@class='GHGOUU-BFK GHGOUU-BPJ GHGOUU-BMK GHGOUU-BJK']//img[@src='http://10.225.16.26:8080/wozm/wozmgwt/clear.cache.gif'])[2]"));
         submitFilter.click();
 
-        WebElement collectionOfDocuments = driver.findElement(By.xpath("//div[@class='GHGOUU-BJK GHGOUU-BKSB']"));
+//        WebElement collectionOfDocuments = driver.findElement(By.xpath("//div[@class='GHGOUU-BJK GHGOUU-BKSB']"));
+//        actions.contextClick(collectionOfDocuments).perform();
+
+        WebElement collectionOfDocuments = (new WebDriverWait(driver, Duration.ofSeconds(10)).until(ExpectedConditions
+                .presenceOfElementLocated(By.xpath("//div[@class='GHGOUU-BJK GHGOUU-BKSB']"))));
         actions.contextClick(collectionOfDocuments).perform();
 
         WebElement noticeDocuments = driver.findElement(By.xpath("//div[@id='x-menu-el-']/div[@class='GHGOUU-BNQC']/a[contains( text(),'Инвертировать отметки')]"));
@@ -92,11 +116,12 @@ public class AutoTests {
 
         WebElement resultText = driver.findElement(By.xpath("//textarea[@class='GHGOUU-BMW GHGOUU-BOW']"));
 
-        System.out.println(resultText.getText());
+        saveScreenshot.apply(saveScreenshot(driver));
 
+        resultMessage = resultText.getText();
         driver.close();
 
-        return resultText.getText();
+        return resultMessage;
     }
 }
 

@@ -3,12 +3,19 @@ package telegram;
 import autoTests.AutoTests;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 
 public class Telegram extends TelegramLongPollingBot {
 
     SendMessage message = new SendMessage(); // Create a SendMessage object with mandatory fields
+    SendPhoto sendPhoto = new SendPhoto();
 
     public void sendNewMessage(String newMessage, Update update) {
 
@@ -22,15 +29,32 @@ public class Telegram extends TelegramLongPollingBot {
         }
     }
 
+    public String sendNewPhoto(String fileLocation, Update update) {
+
+
+
+        try {
+            sendPhoto.setChatId(update.getMessage().getChatId().toString());
+            InputFile file = new InputFile();
+            file.setMedia(new File(fileLocation));
+            sendPhoto.setPhoto(file);
+            execute(sendPhoto); // Call method to send the message
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
+
+        return fileLocation;
+    }
+
     @Override
     public void onUpdateReceived(Update update) {
 
         if (update.hasMessage() && update.getMessage().hasText()) {
 
             switch (update.getMessage().getText()) {
-                case "тест 1": {
+                case "1": {
                     sendNewMessage("Старт теста №1", update);
-                    AutoTests.startTest();
+                    sendNewMessage(AutoTests.startTest(file -> sendNewPhoto(file, update)), update);
                     break;
                 }
                 default: {
