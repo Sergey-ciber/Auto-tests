@@ -7,10 +7,10 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.Augmenter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
@@ -37,10 +37,19 @@ public class Test2 {
 
     public static void startTest(Function<String, String> saveScreenshot, String idDocument) {
 
+        File file = new File("C:/projects/TEST Project/config.properties");
 
-        String url = "http://10.225.16.26:8080/wozm/";
-        String login = "TEST5210";
-        String password = "1111";
+        Properties properties = new Properties();
+
+        try {
+            properties.load(new FileReader(file));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        String url = properties.getProperty("url");
+        String login = properties.getProperty("login");
+        String password = properties.getProperty("password");;
 
 
         System.setProperty("webdriver.chrome.driver", "C:\\SeleniumDrivers\\chromedriver.exe");

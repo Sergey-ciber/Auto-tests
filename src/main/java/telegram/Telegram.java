@@ -93,7 +93,7 @@ public class Telegram extends TelegramLongPollingBot {
                     break;
                 }
                 default: {
-                    sendNewMessage("Не корректная команда. Для списка доступных команд отправьте команду 'тесты'", update);
+                    sendNewMessage("Не корректная команда. Для списка доступных команд отправьте команду \"тесты\"", update);
                     break;
                 }
             }

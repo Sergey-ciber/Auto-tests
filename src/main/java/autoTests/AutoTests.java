@@ -6,13 +6,15 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.Augmenter;
-import java.io.File;
-import java.io.IOException;
+
+import java.io.*;
 import java.time.Duration;
+import java.util.Properties;
 import java.util.function.Function;
 
 public class AutoTests {
     private static String resultMessage;
+
 
 //    ** Сохранить скриншот. Возвращает путь к файлу **
     private static String saveScreenshot (ChromeDriver driver) {
@@ -32,10 +34,19 @@ public class AutoTests {
 
     public static String startTest(Function<String, String> saveScreenshot) {
 
+    File file = new File("C:/projects/TEST Project/config.properties");
 
-        String url = "http://10.225.16.26:8080/wozm/";
-        String login = "TEST5210";
-        String password = "1111";
+     Properties properties = new Properties();
+
+        try {
+            properties.load(new FileReader(file));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        String url = properties.getProperty("url");
+        String login = properties.getProperty("login");
+        String password = properties.getProperty("password");
         String dateBegin = "20.12.2021 00:00:00";
         String dateEnd = "31.12.2022 00:00:00";
 
