@@ -14,6 +14,7 @@ import java.util.function.Function;
 public class AutoTests {
     private static String resultMessage;
 
+//    ** Сохранить скриншот. Возвращает путь к файлу **
     private static String saveScreenshot (ChromeDriver driver) {
 
         String path;
@@ -30,6 +31,7 @@ public class AutoTests {
     }
 
     public static String startTest(Function<String, String> saveScreenshot) {
+
 
         String url = "http://10.225.16.26:8080/wozm/";
         String login = "TEST5210";

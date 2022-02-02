@@ -1,6 +1,7 @@
 package telegram;
 
 import autoTests.AutoTests;
+import autoTests.Test2;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
@@ -11,6 +12,8 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import java.io.File;
 
 public class Telegram extends TelegramLongPollingBot {
+
+
 
     SendMessage message = new SendMessage(); // Create a SendMessage object with mandatory fields
     SendPhoto sendPhoto = new SendPhoto();
@@ -49,16 +52,48 @@ public class Telegram extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(Update update) {
 
+        String id_test;
+        String id_documents;
+
         if (update.hasMessage() && update.getMessage().hasText()) {
 
-            switch (update.getMessage().getText()) {
+            //** Разбор входящего запроса из телеги на элементы **
+            String[] inputQuery = update.getMessage().getText().split(" ");
+
+            if (inputQuery.length < 1){
+                id_test = null;
+            } else {id_test = inputQuery[0];}
+
+            if (inputQuery.length < 2){
+                id_documents = null;
+            } else {id_documents = inputQuery[1];}
+
+            switch (id_test) {
                 case "1": {
+                    if (inputQuery.length > 1) {
+                        sendNewMessage("Для данного теста параметры не передаются", update);
+                    }
                     sendNewMessage("Старт теста №1", update);
                     sendNewMessage(AutoTests.startTest(file -> sendNewPhoto(file, update)), update);
                     break;
                 }
+                case "2": {
+                    if(id_documents == null){
+                        sendNewMessage("Некорректный ID документа", update);}
+                    else {
+                        sendNewMessage("Старт теста №2", update);
+                        Test2.startTest(file -> sendNewPhoto(file, update), inputQuery[1]);
+                    }
+                    break;
+                }
+                case "тесты": {
+                    sendNewMessage("Для запуска теста №1 отправьте \"1\"" + "\n" +
+                            "Для запуска теста №2 отправьте \"2 id_документа\"" + "\n" +
+                            "пример id D436033617070FA8E0530A13E40A6F84", update);
+                    break;
+                }
                 default: {
-                    sendNewMessage("Неверная команда", update);
+                    sendNewMessage("Не корректная команда. Для списка доступных команд отправьте команду 'тесты'", update);
                     break;
                 }
             }
