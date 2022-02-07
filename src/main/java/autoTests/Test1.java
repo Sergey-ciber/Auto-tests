@@ -1,52 +1,23 @@
 package autoTests;
 
-import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.remote.Augmenter;
 
-import java.io.*;
 import java.time.Duration;
-import java.util.Properties;
 import java.util.function.Function;
 
-public class AutoTests {
-    private static String resultMessage;
+public class Test1 extends TestPattern {
 
-
-//    ** Сохранить скриншот. Возвращает путь к файлу **
-    private static String saveScreenshot (ChromeDriver driver) {
-
-        String path;
-        try {
-            WebDriver webDriver = new Augmenter().augment(driver);
-            File source = ((TakesScreenshot)webDriver).getScreenshotAs(OutputType.FILE);
-            path = "./" + source.getName();
-            FileUtils.copyFile(source, new File(path));
-        }
-        catch(IOException e) {
-            path = "Failed to capture screenshot: " + e.getMessage();
-        }
-        return path;
+    public Test1() {
+        super();
     }
 
-    public static String startTest(Function<String, String> saveScreenshot) {
+    private static String resultMessage;
 
-    File file = new File("C:/projects/TEST Project/config.properties");
+    public String startTest(Function<String, String> saveScreenshot) {
 
-     Properties properties = new Properties();
-
-        try {
-            properties.load(new FileReader(file));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        String url = properties.getProperty("url");
-        String login = properties.getProperty("login");
-        String password = properties.getProperty("password");
         String dateBegin = "20.12.2021 00:00:00";
         String dateEnd = "31.12.2022 00:00:00";
 
@@ -61,14 +32,14 @@ public class AutoTests {
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(100));
         Actions actions = new Actions(driver);
 
-        driver.get(url);
+        driver.get(getUrl());
 
         WebElement inputLogin = driver.findElement(By.name("j_username"));
         WebElement inputPassword = driver.findElement(By.name("j_password"));
 
 
-        inputLogin.sendKeys(login);
-        inputPassword.sendKeys(password, Keys.ENTER);
+        inputLogin.sendKeys(getLogin());
+        inputPassword.sendKeys(getPassword(), Keys.ENTER);
 
         WebElement armFilial = driver.findElement(By.xpath("//*[@id='x-widget-5']/div[2]/table/tbody/tr/td/div[@class='GHGOUU-BCP GHGOUU-BHK GHGOUU-BGGC']"));
         armFilial.click();

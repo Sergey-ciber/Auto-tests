@@ -1,56 +1,23 @@
 package autoTests;
 
-import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.remote.Augmenter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+
 import java.time.Duration;
-import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
-public class Test2 {
-    private static String resultMessage;
-    private static int valueStipend;
+public class Test2 extends TestPattern {
 
-
-    //    ** Сохранить скриншот. Возвращает путь к файлу **
-    private static String saveScreenshot (ChromeDriver driver) {
-
-        String path;
-        try {
-            WebDriver webDriver = new Augmenter().augment(driver);
-            File source = ((TakesScreenshot)webDriver).getScreenshotAs(OutputType.FILE);
-            path = "./" + source.getName();
-            FileUtils.copyFile(source, new File(path));
-        }
-        catch(IOException e) {
-            path = "Failed to capture screenshot: " + e.getMessage();
-        }
-        return path;
+    public Test2() {
+        super();
     }
 
-    public static void startTest(Function<String, String> saveScreenshot, String idDocument) {
+    private static int valueStipend;
 
-        File file = new File("C:/projects/TEST Project/config.properties");
-
-        Properties properties = new Properties();
-
-        try {
-            properties.load(new FileReader(file));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        String url = properties.getProperty("url");
-        String login = properties.getProperty("login");
-        String password = properties.getProperty("password");;
-
+    public void startTest(Function<String, String> saveScreenshot, String idDocument) {
 
         System.setProperty("webdriver.chrome.driver", "C:\\SeleniumDrivers\\chromedriver.exe");
 
@@ -63,14 +30,14 @@ public class Test2 {
         driver.manage().window().maximize();
         Actions actions = new Actions(driver);
 
-        driver.get(url);
+        driver.get(getUrl());
 
         WebElement inputLogin = driver.findElement(By.name("j_username"));
         WebElement inputPassword = driver.findElement(By.name("j_password"));
 
 
-        inputLogin.sendKeys(login);
-        inputPassword.sendKeys(password, Keys.ENTER);
+        inputLogin.sendKeys(getLogin());
+        inputPassword.sendKeys(getPassword(), Keys.ENTER);
 
         WebElement armFilial = driver.findElement(By.xpath("//*[@id='x-widget-5']/div[2]/table/tbody/tr/td/div[@class='GHGOUU-BCP GHGOUU-BHK GHGOUU-BGGC']"));
         armFilial.click();
@@ -105,14 +72,13 @@ public class Test2 {
 
         WebElement infoStipend = driver.findElement(By.xpath("//span[@class='GHGOUU-BNSC']/span[contains(text(),'Пособие')]"));
         infoStipend.click();
-        saveScreenshot.apply(saveScreenshot(driver));
+        saveScreenshot.apply(this.saveScreenshot(driver));
 
 //        ** Получаем вид пособия **
         WebElement stipend = driver.findElement(By.xpath("(//fieldset[@class='GHGOUU-BJOC'])[14]//input"));
         valueStipend = Integer.parseInt(stipend.getAttribute("value"));
-        System.out.println("Пособие " + valueStipend);
 
-        if(valueStipend == 1 || valueStipend == 2 || valueStipend == 3){
+        if (valueStipend == 1 || valueStipend == 2 || valueStipend == 3 || valueStipend == 4 || valueStipend == 5 || valueStipend == 6) {
             WebElement InfoPeriod = driver.findElement(By.xpath("//span[@class='GHGOUU-BNSC']/span[contains(text(),'Период')]"));
             InfoPeriod.click();
             saveScreenshot.apply(saveScreenshot(driver));

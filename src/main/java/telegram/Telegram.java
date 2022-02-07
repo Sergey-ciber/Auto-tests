@@ -1,6 +1,6 @@
 package telegram;
 
-import autoTests.AutoTests;
+import autoTests.Test1;
 import autoTests.Test2;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -73,16 +73,18 @@ public class Telegram extends TelegramLongPollingBot {
                     if (inputQuery.length > 1) {
                         sendNewMessage("Для данного теста параметры не передаются", update);
                     }
+                    Test1 test1 = new Test1();
                     sendNewMessage("Старт теста №1", update);
-                    sendNewMessage(AutoTests.startTest(file -> sendNewPhoto(file, update)), update);
+                    sendNewMessage(test1.startTest(file -> sendNewPhoto(file, update)), update);
                     break;
                 }
                 case "2": {
                     if(id_documents == null){
                         sendNewMessage("Некорректный ID документа", update);}
                     else {
+                        Test2 test2 = new Test2();
                         sendNewMessage("Старт теста №2", update);
-                        Test2.startTest(file -> sendNewPhoto(file, update), inputQuery[1]);
+                        test2.startTest(file -> sendNewPhoto(file, update), inputQuery[1]);
                     }
                     break;
                 }
