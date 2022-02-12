@@ -9,4 +9,4 @@
 .idea
 .allure
 target
-#config.properties
+config.properties
