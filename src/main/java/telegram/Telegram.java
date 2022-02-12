@@ -19,6 +19,7 @@ public class Telegram extends TelegramLongPollingBot {
     private String botUsername;
     private String botToken;
 
+
     public Telegram () {
         super();
 
