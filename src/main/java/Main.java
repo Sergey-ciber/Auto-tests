@@ -8,11 +8,11 @@ public class Main {
 
         System.out.println("Start my test");
 
-//        try {
-//            TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
-//            botsApi.registerBot(new Telegram());
-//        } catch (TelegramApiException e) {
-//            e.printStackTrace();
-//        }
+        try {
+            TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
+            botsApi.registerBot(new Telegram());
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
     }
 }
