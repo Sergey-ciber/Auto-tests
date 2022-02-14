@@ -2,7 +2,9 @@ package telegram;
 
 import autoTests.Test1;
 import autoTests.Test2;
+import autoTests.Test3;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
@@ -38,6 +40,7 @@ public class Telegram extends TelegramLongPollingBot {
 
     SendMessage message = new SendMessage(); // Create a SendMessage object with mandatory fields
     SendPhoto sendPhoto = new SendPhoto();
+    SendDocument sendDocument = new SendDocument();
 
 
     //    ** Метод для отправки сообщения в телеграм **
@@ -51,6 +54,26 @@ public class Telegram extends TelegramLongPollingBot {
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
+    }
+
+    //    ** Метод для отправки документов в телеграм **
+    public String sendNewDocuments(Update update) {
+
+        String message = "message";
+
+        File document = new File("files/NDFL.DOCX");
+        sendDocument.setChatId(update.getMessage().getChatId().toString());
+        InputFile file = new InputFile();
+        file.setMedia(document);
+        sendDocument.setDocument(file);
+
+        try {
+            execute(sendDocument); // Call method to send the message
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
+
+        return message;
     }
 
     //    ** Метод для отправки скриншота в телеграм **
@@ -73,11 +96,12 @@ public class Telegram extends TelegramLongPollingBot {
         return fileLocation;
     }
 
+
     @Override
     public void onUpdateReceived(Update update) {
 
         String id_test;
-        String id_documents;
+        String parameter1;
 
         if (update.hasMessage() && update.getMessage().hasText()) {
 
@@ -91,9 +115,9 @@ public class Telegram extends TelegramLongPollingBot {
             }
 
             if (inputQuery.length < 2) {
-                id_documents = null;
+                parameter1 = null;
             } else {
-                id_documents = inputQuery[1];
+                parameter1 = inputQuery[1];
             }
 
             switch (id_test) {
@@ -107,15 +131,31 @@ public class Telegram extends TelegramLongPollingBot {
                     break;
                 }
                 case "2": {
-                    if (id_documents == null) {
+                    if (parameter1 == null) {
                         sendNewMessage("Некорректный ID документа", update);
                     } else {
                         Test2 test2 = new Test2();
                         sendNewMessage("Старт теста №2", update);
-                        test2.startTest(file -> sendNewPhoto(file, update), inputQuery[1]);
+                        test2.startTest(file -> sendNewPhoto(file, update), parameter1);
                     }
                     break;
                 }
+                case "3": {
+                    if (parameter1 == null) {
+                        sendNewMessage("Некорректный СНИЛС", update);
+                    } else {
+                        Test3 test3 = new Test3();
+                        sendNewMessage("Старт теста №3", update);
+                        test3.startTest(file -> sendNewPhoto(file, update), parameter1);
+                    }
+                    break;
+                }
+                case "4": {
+                    sendNewMessage("Старт кейса 4", update);
+                    sendNewDocuments(update);
+                }
+                break;
+
                 case "тесты": {
                     sendNewMessage("Для запуска теста №1 отправьте \"1\"" + "\n" +
                             "Для запуска теста №2 отправьте \"2 id_документа\"" + "\n" +

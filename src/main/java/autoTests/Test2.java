@@ -17,7 +17,7 @@ public class Test2 extends TestPattern {
 
     private static int valueStipend;
 
-    public void startTest(Function<String, String> saveScreenshot, String idDocument) {
+    public void startTest(Function<String, String> saveScreenshot, String parameter1) {
 
         System.setProperty("webdriver.chrome.driver", "C:\\SeleniumDrivers\\chromedriver.exe");
 
@@ -53,7 +53,7 @@ public class Test2 extends TestPattern {
 
         WebElement inputGuidDocument = driver.findElement(By.xpath("//input[@id='x-widget-10-input']"));
         inputGuidDocument.clear();
-        inputGuidDocument.sendKeys(idDocument);
+        inputGuidDocument.sendKeys(parameter1);
 
         WebElement applySearch = driver.findElement(By.xpath("(//div[@class='GHGOUU-BGDC']//img[@src='http://10.225.16.26:8080/wozm/wozmgwt/clear.cache.gif'])[3]"));
         applySearch.click();
