@@ -23,30 +23,7 @@ public class Test3 extends TestPattern {
         super();
     }
 
-    public void saveNDFL(String downloadLink) {
-
-        //Set file to save
-        File fileToSave = new File("files/NDFL.DOCX");
-
-//Download file using default org.apache.http client
-        CloseableHttpClient httpClient = HttpClients.createDefault();
-        HttpGet httpGet = new HttpGet(downloadLink);
-        HttpResponse response = null;
-        try {
-            response = httpClient.execute(httpGet, new BasicHttpContext());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-//Save file on disk
-        try {
-            copyInputStreamToFile(response.getEntity().getContent(), fileToSave);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void startTest(Function<String, String> sendDocument, String parameter1) {
+    public void startTest(Function<String, String> sendNewDocuments, String parameter1) {
 
         System.setProperty("webdriver.chrome.driver", "C:\\SeleniumDrivers\\chromedriver.exe");
 
@@ -101,8 +78,12 @@ public class Test3 extends TestPattern {
                 .findElement(By.xpath("//a[contains(text(),'PersonaIncome.docx')]"))
                 .getAttribute("href");
 
-        saveNDFL(downloadLink);
+        System.out.println(downloadLink);
 
-        driver.close();
+        saveFile(downloadLink);
+
+        sendNewDocuments.apply(saveFile(downloadLink));
+
+//        driver.close();
     }
 }

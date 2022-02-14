@@ -3,6 +3,11 @@ package telegram;
 import autoTests.Test1;
 import autoTests.Test2;
 import autoTests.Test3;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.protocol.BasicHttpContext;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -15,6 +20,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Properties;
+
+import static org.apache.commons.io.FileUtils.copyInputStreamToFile;
 
 public class Telegram extends TelegramLongPollingBot {
 
@@ -42,7 +49,6 @@ public class Telegram extends TelegramLongPollingBot {
     SendPhoto sendPhoto = new SendPhoto();
     SendDocument sendDocument = new SendDocument();
 
-
     //    ** Метод для отправки сообщения в телеграм **
     public void sendNewMessage(String newMessage, Update update) {
 
@@ -57,23 +63,23 @@ public class Telegram extends TelegramLongPollingBot {
     }
 
     //    ** Метод для отправки документов в телеграм **
-    public String sendNewDocuments(Update update) {
+    public String sendNewDocuments(String fileLocation, Update update) {
 
-        String message = "message";
-
-        File document = new File("files/NDFL.DOCX");
+        try {
+        File document = new File(fileLocation);
         sendDocument.setChatId(update.getMessage().getChatId().toString());
         InputFile file = new InputFile();
         file.setMedia(document);
         sendDocument.setDocument(file);
-
-        try {
-            execute(sendDocument); // Call method to send the message
+        execute(sendDocument); // Call method to send the message
+            if (document.delete()) {
+                System.out.println("Фаил удален");
+            } else System.out.println("Фаил не найден");
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
 
-        return message;
+        return fileLocation;
     }
 
     //    ** Метод для отправки скриншота в телеграм **
@@ -146,13 +152,13 @@ public class Telegram extends TelegramLongPollingBot {
                     } else {
                         Test3 test3 = new Test3();
                         sendNewMessage("Старт теста №3", update);
-                        test3.startTest(file -> sendNewPhoto(file, update), parameter1);
+                        test3.startTest(file -> sendNewDocuments(file, update), parameter1);
                     }
                     break;
                 }
                 case "4": {
                     sendNewMessage("Старт кейса 4", update);
-                    sendNewDocuments(update);
+
                 }
                 break;
 

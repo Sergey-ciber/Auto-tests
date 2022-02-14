@@ -1,6 +1,11 @@
 package autoTests;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.protocol.BasicHttpContext;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
@@ -11,6 +16,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Properties;
+
+import static org.apache.commons.io.FileUtils.copyInputStreamToFile;
 
 public abstract class TestPattern {
 
@@ -52,6 +59,33 @@ public abstract class TestPattern {
         catch(IOException e) {
             path = "Failed to capture screenshot: " + e.getMessage();
         }
+        return path;
+    }
+
+    public String saveFile(String downloadLink) {
+
+        String path ="files/PersonaIncome.docx";
+
+        //Set file to save
+        File fileToSave = new File(path);
+
+//Download file using default org.apache.http client
+        CloseableHttpClient httpClient = HttpClients.createDefault();
+        HttpGet httpGet = new HttpGet(downloadLink);
+        HttpResponse response = null;
+        try {
+            response = httpClient.execute(httpGet, new BasicHttpContext());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+//Save file on disk
+        try {
+            copyInputStreamToFile(response.getEntity().getContent(), fileToSave);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         return path;
     }
 
