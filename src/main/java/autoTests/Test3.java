@@ -23,7 +23,7 @@ public class Test3 extends TestPattern {
         super();
     }
 
-    public void startTest(Function<String, String> sendNewDocuments, String parameter1) {
+    public void startTest(Function<String, String> sendDocument, String parameter1) {
 
         System.setProperty("webdriver.chrome.driver", "C:\\SeleniumDrivers\\chromedriver.exe");
 
@@ -73,17 +73,16 @@ public class Test3 extends TestPattern {
         WebElement startPrintNDFL = driver.findElement(By.xpath("((//div[@class='GHGOUU-BGDC'])[2]//div[@class='GHGOUU-BBDC']//div[@class='GHGOUU-BMP']/div[@class='GHGOUU-BFK GHGOUU-BPJ GHGOUU-BMK GHGOUU-BJK'])[2]"));
         startPrintNDFL.click();
 
-//        Get download link
-        String downloadLink = driver
-                .findElement(By.xpath("//a[contains(text(),'PersonaIncome.docx')]"))
-                .getAttribute("href");
+        WebElement downloadLink = driver.findElement(By.xpath("//a[contains(text(),'PersonaIncome.docx')]"));
+        downloadLink.click();
 
-        System.out.println(downloadLink);
-
-        saveFile(downloadLink);
-
-        sendNewDocuments.apply(saveFile(downloadLink));
-
+////        Get download link
+//        String downloadLink = driver
+//                .findElement(By.xpath("//a[contains(text(),'PersonaIncome.docx')]"))
+//                .getAttribute("href");
+//
+//        sendDocument.apply(saveFile(downloadLink));
+//
 //        driver.close();
     }
 }
